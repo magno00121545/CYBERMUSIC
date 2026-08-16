@@ -136,9 +136,10 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCategory, onOpenAdmin })
               <button
                 type="button"
                 onClick={onOpenAdmin}
-                className="w-full py-2 px-3 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 font-cyber font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer mt-2"
+                className="w-full py-2 px-3 rounded-xl bg-transparent hover:bg-cyan-500/5 border border-transparent hover:border-cyan-500/20 text-cyan-500/30 hover:text-cyan-400 transition-all cursor-pointer mt-2 flex justify-center"
+                title="Acesso Admin"
               >
-                <span>PAINEL ADMINISTRATIVO</span>
+                <ShieldCheck className="w-5 h-5" />
               </button>
             )}
             <div className="p-2.5 rounded-xl bg-[#0e0e11] border border-[#222226] flex items-center gap-3">
