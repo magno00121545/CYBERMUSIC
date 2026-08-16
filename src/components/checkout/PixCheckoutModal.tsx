@@ -365,74 +365,9 @@ export const PixCheckoutModal: React.FC<PixCheckoutModalProps> = ({
             )}
 
             {/* STEP 2: PIX PAYMENT DISPLAY */}
-            {step === 'pix' && payment && (
-              <div className="space-y-4 text-center">
-                
-                {/* Timer & Status */}
-                <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-cyan-950/30 border border-cyan-500/30 text-xs">
-                  <div className="flex items-center gap-2 text-cyan-300 font-cyber">
-                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-                    <span>AGUARDANDO PAGAMENTO</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-slate-300 font-mono">
-                    <Clock className="w-3.5 h-3.5 text-amber-400" />
-                    <span>{formatTimer(timeLeft)}</span>
-                  </div>
-                </div>
-
-                {/* QR Code */}
-                <div className="p-4 bg-white rounded-2xl w-56 h-56 mx-auto flex items-center justify-center shadow-2xl border-4 border-cyan-400/80">
-                  <img
-                    src={payment.pix_qr_image}
-                    alt="PIX QR Code"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <p className="text-xs text-slate-300">
-                    Abra o app do seu banco, escolha <strong>PIX</strong> e escaneie o QR Code acima ou copie a chave abaixo.
-                  </p>
-                  <p className="text-lg font-black font-cyber text-emerald-400">
-                    R$ {payment.amount.toFixed(2)}
-                  </p>
-                </div>
-
-                {/* Copia e Cola EMV */}
-                <div className="space-y-2">
-                  <div className="p-2.5 rounded-xl bg-[#09090c] border border-[#222226] text-[11px] font-mono text-[#888890] break-all max-h-16 overflow-y-auto text-left select-all">
-                    {payment.pix_emv}
-                  </div>
-
-                  <button
-                    onClick={handleCopyPix}
-                    className={`w-full py-2.5 rounded-xl font-cyber font-bold text-xs flex items-center justify-center gap-2 transition-all ${
-                      isCopied
-                        ? 'bg-emerald-500 text-black shadow-md shadow-emerald-500/30'
-                        : 'bg-[#16161c] hover:bg-[#202028] text-cyan-300 border border-[#26262b]'
-                    }`}
-                  >
-                    {isCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                    <span>{isCopied ? 'CÓDIGO PIX COPIADO!' : 'COPIAR CÓDIGO PIX (COPIA E COLA)'}</span>
-                  </button>
-                </div>
-
-                {/* Test Webhook Simulator Button */}
-                <div className="pt-2 border-t border-[#1f1f24]">
-                  <button
-                    type="button"
-                    onClick={handleSimulatePayment}
-                    disabled={isSimulating}
-                    className="w-full py-2.5 rounded-xl bg-emerald-600/15 hover:bg-emerald-600/25 text-emerald-300 border border-emerald-500/30 text-xs font-cyber font-bold flex items-center justify-center gap-2 transition-all"
-                  >
-                    <Zap className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>{isSimulating ? 'CONFIRMANDO...' : 'SIMULAR APROVAÇÃO INSTANTÂNEA (TESTE DEMO)'}</span>
-                  </button>
-                  <p className="text-[10px] text-[#888890] mt-1">
-                    *Ambiente de testes: simula o webhook bancário em tempo real para liberação imediata.
-                  </p>
-                </div>
-
+            {step === 'pix' && (
+              <div className="text-center py-6 text-slate-300">
+                <p>Processando pedido...</p>
               </div>
             )}
 
@@ -446,44 +381,32 @@ export const PixCheckoutModal: React.FC<PixCheckoutModalProps> = ({
 
                 <div className="space-y-1">
                   <h3 className="text-lg sm:text-xl font-black font-cyber text-white">
-                    PAGAMENTO PIX CONFIRMADO!
+                    PEDIDO RECEBIDO COM SUCESSO!
                   </h3>
                   <p className="text-xs text-slate-300">
-                    Seu pedido <strong>#{order?.order_number || 'OK'}</strong> foi liberado no servidor com sucesso.
+                    Seu pedido <strong>#{order?.order_number || 'OK'}</strong> está sendo processado.
                   </p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/30 text-left space-y-2 text-xs">
                   <div className="flex items-center justify-between text-slate-300">
-                    <span>Pacote Adquirido:</span>
+                    <span>Pacote:</span>
                     <strong className="text-white font-cyber">{pkg.title}</strong>
                   </div>
                   <div className="flex items-center justify-between text-slate-300">
-                    <span>Total de Faixas:</span>
-                    <span className="text-cyan-300 font-cyber">{pkg.total_tracks} músicas</span>
-                  </div>
-                  <div className="flex items-center justify-between text-slate-300">
-                    <span>Acesso Permanente:</span>
-                    <span className="text-emerald-400 font-semibold">Salvo na sua conta</span>
+                    <span>Acesso:</span>
+                    <span className="text-emerald-400 font-semibold">Liberado após confirmação</span>
                   </div>
                 </div>
 
                 {/* Direct Action Buttons */}
                 <div className="space-y-2.5 pt-2">
                   <button
-                    onClick={handleDirectDownload}
-                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-black font-cyber font-black text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/30 transition-all active:scale-95"
-                  >
-                    <Download className="w-4 h-4" />
-                    <span>BAIXAR PACOTE COMPLETO (.ZIP)</span>
-                  </button>
-
-                  <button
                     onClick={() => {
                       onClose();
                       onGoToPurchases();
                     }}
-                    className="w-full py-2.5 rounded-xl bg-[#16161c] hover:bg-[#202028] border border-[#26262b] text-slate-200 text-xs font-cyber font-bold transition-all"
+                    className="w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-400 hover:from-cyan-400 hover:to-emerald-300 text-black font-cyber font-black text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/30 transition-all active:scale-95"
                   >
                     VER EM "MINHAS COMPRAS"
                   </button>
