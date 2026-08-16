@@ -32,10 +32,15 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   if (!res.ok) {
     let errorMsg = 'Erro na requisição';
     try {
-      const errData = await res.json();
-      errorMsg = errData.error || errData.message || errorMsg;
+      const clonedRes = res.clone();
+      try {
+        const errData = await clonedRes.json();
+        errorMsg = errData.error || errData.message || errorMsg;
+      } catch {
+        errorMsg = await res.text() || errorMsg;
+      }
     } catch {
-      errorMsg = await res.text() || errorMsg;
+      // ignore
     }
     throw new Error(errorMsg);
   }
