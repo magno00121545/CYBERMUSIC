@@ -25,55 +25,6 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onBackToApp }) => {
   const [adminPassword, setAdminPassword] = useState('');
   const [isPasswordVerified, setIsPasswordVerified] = useState(false);
 
-  // If user is not staff, allow quick 1-click demo access to manage the store
-  if (!isStaff) {
-    return (
-      <div className="max-w-xl mx-auto my-12 p-8 rounded-3xl bg-[#0c0c0e] border border-cyan-500/40 text-center space-y-5 shadow-2xl">
-        <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 mx-auto">
-          <Shield className="w-8 h-8" />
-        </div>
-
-        <div className="space-y-2">
-          <h2 className="font-cyber font-black text-xl text-white tracking-wider uppercase">
-            Acesso ao Painel do Administrador
-          </h2>
-          <p className="text-xs text-[#888890] leading-relaxed">
-            Para gerenciar o catálogo, cadastrar novas pastas, acompanhar pedidos PIX e configurar a plataforma, você precisa estar autenticado como Administrador.
-          </p>
-        </div>
-
-        <div className="pt-2 space-y-3">
-          <button
-            type="button"
-            disabled={isLoggingIn}
-            onClick={async () => {
-              setIsLoggingIn(true);
-              try {
-                await login('admin@cybermusic.com', 'admin123');
-              } catch (err: any) {
-                alert(err.message || 'Erro ao conectar conta admin');
-              } finally {
-                setIsLoggingIn(false);
-              }
-            }}
-            className="w-full py-3.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-cyber font-black text-xs tracking-wider transition-all shadow-lg shadow-cyan-500/30 flex items-center justify-center gap-2 cursor-pointer active:scale-95"
-          >
-            <Shield className="w-4 h-4" />
-            <span>{isLoggingIn ? 'AUTENTICANDO...' : 'ENTRAR COMO ADMINISTRADOR MASTER (1-CLIQUE)'}</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={onBackToApp}
-            className="w-full py-2.5 rounded-xl bg-[#121215] border border-[#222226] text-xs font-cyber text-[#888890] hover:text-white transition-colors cursor-pointer"
-          >
-            ← Voltar para a Loja Pública
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   // Password verification layer
   if (!isPasswordVerified) {
     return (

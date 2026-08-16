@@ -235,22 +235,6 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Navigation Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
           
-          {/* Store Management / Admin Portal Link */}
-          <button
-            type="button"
-            onClick={() => onSelectTab(currentTab === 'admin' ? 'home' : 'admin')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-cyber font-bold tracking-wider flex items-center gap-1.5 border transition-all cursor-pointer ${
-              currentTab === 'admin'
-                ? 'bg-cyan-500 text-black border-cyan-400 shadow-md shadow-cyan-500/30 font-black'
-                : 'bg-[#121216] text-cyan-300 border-cyan-500/40 hover:bg-cyan-950/40 hover:border-cyan-400'
-            }`}
-            title="Gerenciar Loja / Painel Admin"
-          >
-            <Shield className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="hidden sm:inline">GERENCIAR LOJA</span>
-            <span className="sm:hidden">ADMIN</span>
-          </button>
-
           {/* Minhas Compras Button */}
           {user && (
             <button
@@ -322,101 +306,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
-          {/* User Account / Login Button */}
-          {user ? (
-            <div ref={userMenuRef} className="relative">
-              <button
-                onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                className="flex items-center gap-2 p-1 pl-2 rounded-xl bg-[#0e0e11] border border-[#222226] hover:border-[#33333a] transition-all"
-              >
-                <span className="text-xs font-semibold text-white max-w-[100px] truncate hidden sm:inline">
-                  {user.name.split(' ')[0]}
-                </span>
-                <img
-                  src={user.avatar || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.email}`}
-                  alt={user.name}
-                  className="w-7 h-7 rounded-lg bg-[#16161c] object-cover border border-cyan-500/30"
-                />
-                <ChevronDown className="w-3.5 h-3.5 text-[#888890] hidden sm:block" />
-              </button>
-
-              {/* User Menu Dropdown */}
-              {isUserMenuOpen && (
-                <div className="absolute right-0 mt-2 w-56 bg-[#0c0c0f] border border-[#26262b] rounded-2xl shadow-2xl p-2 z-50">
-                  <div className="px-3 py-2 border-b border-[#1f1f24] mb-1">
-                    <p className="text-xs font-bold text-white truncate">{user.name}</p>
-                    <p className="text-[11px] text-[#888890] truncate">{user.email}</p>
-                    <span className="inline-block mt-1 px-1.5 py-0.2 rounded bg-cyan-500/15 text-cyan-300 text-[9px] font-cyber font-bold uppercase">
-                      {user.role}
-                    </span>
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      onSelectTab('purchases');
-                      setIsUserMenuOpen(false);
-                    }}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-slate-200 hover:bg-[#16161c] hover:text-white transition-colors"
-                  >
-                    <Download className="w-3.5 h-3.5 text-cyan-400" />
-                    Minhas Compras
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      onSelectTab('profile');
-                      setIsUserMenuOpen(false);
-                    }}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-slate-200 hover:bg-[#16161c] hover:text-white transition-colors"
-                  >
-                    <UserIcon className="w-3.5 h-3.5 text-indigo-400" />
-                    Meu Perfil
-                  </button>
-
-                  {isStaff && (
-                    <button
-                      onClick={() => {
-                        onSelectTab('admin');
-                        setIsUserMenuOpen(false);
-                      }}
-                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-cyan-300 hover:bg-cyan-950/40 transition-colors"
-                    >
-                      <Shield className="w-3.5 h-3.5 text-cyan-400" />
-                      Painel Administrativo
-                    </button>
-                  )}
-
-                  <div className="border-t border-[#1f1f24] mt-1 pt-1">
-                    <button
-                      onClick={() => {
-                        logout();
-                        setIsUserMenuOpen(false);
-                      }}
-                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs text-rose-400 hover:bg-rose-950/30 transition-colors"
-                    >
-                      <LogOut className="w-3.5 h-3.5" />
-                      Sair da Conta
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => onOpenAuth('login')}
-                className="px-3 py-1.5 rounded-xl bg-transparent text-xs font-semibold text-[#c0c0c5] hover:text-white hover:bg-[#16161c] transition-all font-cyber tracking-wider"
-              >
-                ENTRAR
-              </button>
-              <button
-                onClick={() => onOpenAuth('register')}
-                className="px-3.5 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 active:scale-95 text-black text-xs font-bold font-cyber tracking-wider transition-all shadow-md shadow-cyan-500/25"
-              >
-                CRIAR CONTA
-              </button>
-            </div>
-          )}
+          {/* User Account Area - Disabled */}
+          <div className="hidden" />
 
         </div>
       </div>

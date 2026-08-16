@@ -136,9 +136,9 @@ export const Footer: React.FC<FooterProps> = ({ onSelectCategory, onOpenAdmin })
               <button
                 type="button"
                 onClick={onOpenAdmin}
-                className="w-full py-2 px-3 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 font-cyber font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                className="w-full py-2 px-3 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 font-cyber font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer mt-2"
               >
-                <span>GERENCIAR LOJA (ADMIN)</span>
+                <span>PAINEL ADMINISTRATIVO</span>
               </button>
             )}
             <div className="p-2.5 rounded-xl bg-[#0e0e11] border border-[#222226] flex items-center gap-3">
