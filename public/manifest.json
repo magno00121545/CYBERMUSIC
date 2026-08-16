@@ -1,0 +1,26 @@
+{
+  "name": "CYBER MUSIC - Plataforma de Venda de Músicas",
+  "short_name": "CYBER MUSIC",
+  "description": "Plataforma de venda de pacotes e pastas de músicas com download liberado após pagamento PIX.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090a0f",
+  "theme_color": "#00f0ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["music", "entertainment", "shopping"],
+  "screenshots": []
+}

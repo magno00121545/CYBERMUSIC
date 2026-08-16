@@ -1,0 +1,6 @@
+{
+  "name": "CYBER MUSIC",
+  "description": "Plataforma de venda e distribuição de pastas e pacotes de músicas com pagamentos PIX instantâneos, links de download seguros e assinados, painel administrativo multi-nível e sincronização em tempo real.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
