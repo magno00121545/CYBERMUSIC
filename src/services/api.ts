@@ -160,6 +160,7 @@ export const api = {
   deleteAdminCoupon: (id: string) => request<{ success: boolean }>(`/admin/coupons/${id}`, { method: 'DELETE' }),
 
   getAdminUsers: () => request<any[]>('/admin/users'),
+  updateAdminUser: (id: string, data: { username?: string; password?: string }) => request<{ success: boolean; user: User }>(`/admin/users/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   updateUserRole: (id: string, role: UserRole) => request<{ success: boolean; user: User }>(`/admin/users/${id}/role`, { method: 'PUT', body: JSON.stringify({ role }) }),
 
   broadcastNotification: (data: { title: string; message: string; type?: string; link?: string }) => request<AppNotification>('/admin/notifications/broadcast', { method: 'POST', body: JSON.stringify(data) }),
@@ -169,4 +170,7 @@ export const api = {
   restoreAdminBackup: (filename: string) => request<{ success: boolean; message: string }>('/admin/backups/restore', { method: 'POST', body: JSON.stringify({ filename }) }),
 
   getAdminLogs: () => request<any[]>('/admin/logs'),
+  
+  getAdminSettings: () => request<any>('/admin/settings'),
+  updateAdminSettings: (data: { support_whatsapp?: string }) => request<any>('/admin/settings', { method: 'PUT', body: JSON.stringify(data) }),
 };

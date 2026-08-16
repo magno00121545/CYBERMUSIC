@@ -50,6 +50,7 @@ function seedDatabase(): DatabaseSchema {
     {
       id: adminId,
       name: 'Cyber Admin',
+      username: 'admin',
       email: 'admin@cybermusic.com',
       role: 'ADMIN',
       phone: '(11) 98888-0001',
@@ -59,6 +60,7 @@ function seedDatabase(): DatabaseSchema {
     {
       id: editorId,
       name: 'Carlos DJ (Editor)',
+      username: 'carlos',
       email: 'editor@cybermusic.com',
       role: 'EDITOR',
       phone: '(11) 98888-0002',
@@ -68,6 +70,7 @@ function seedDatabase(): DatabaseSchema {
     {
       id: suporteId,
       name: 'Mariana Suporte',
+      username: 'mariana',
       email: 'suporte@cybermusic.com',
       role: 'SUPORTE',
       phone: '(11) 98888-0003',
@@ -77,6 +80,7 @@ function seedDatabase(): DatabaseSchema {
     {
       id: clienteId,
       name: 'Lucas Produtor',
+      username: 'lucas',
       email: 'cliente@gmail.com',
       role: 'USER',
       phone: '(21) 99999-7777',
@@ -897,6 +901,14 @@ export function getDb(): DatabaseSchema {
       if (!dbInstance!.notifications) dbInstance!.notifications = [];
       if (!dbInstance!.settings) dbInstance!.settings = {};
       if (!dbInstance!.activity_logs) dbInstance!.activity_logs = [];
+      
+      // Migration: Add username to users if missing
+      dbInstance!.users.forEach((user: any) => {
+        if (!('username' in user)) {
+          user.username = (user.email ? user.email.split('@')[0] : 'user') + '_' + (user.id ? user.id.slice(-4) : '0000');
+        }
+      });
+      
       return dbInstance!;
     }
   } catch (err) {

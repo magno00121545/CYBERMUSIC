@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, Package as PackageIcon, Layers, ShoppingBag, 
-  Tag, Users, Bell, Database, Activity, ArrowLeft, Shield
+  Tag, Users, Bell, Database, Activity, ArrowLeft, Shield, Settings
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext.js';
 import { AdminDashboard } from './AdminDashboard.js';
@@ -13,6 +13,7 @@ import { AdminUsers } from './AdminUsers.js';
 import { AdminNotifications } from './AdminNotifications.js';
 import { AdminBackups } from './AdminBackups.js';
 import { AdminLogs } from './AdminLogs.js';
+import { AdminSettings } from './AdminSettings.js';
 
 interface AdminLayoutProps {
   onBackToApp: () => void;
@@ -69,6 +70,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onBackToApp }) => {
     { id: 'notifications', label: 'Notificações Globais', icon: Bell, allowed: isAdmin || isEditor },
     { id: 'backups', label: 'Backups & Cloud', icon: Database, allowed: isAdmin },
     { id: 'logs', label: 'Logs de Auditoria', icon: Activity, allowed: isAdmin },
+    { id: 'settings', label: 'Configurações', icon: Settings, allowed: isAdmin },
   ];
 
   return (

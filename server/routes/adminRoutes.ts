@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
+import bcrypt from 'bcryptjs';
 import { getDb, saveDb, createBackup, listBackups, restoreBackup, logActivity } from '../db.js';
 import { requireAuth, requireRoles, AuthRequest } from '../auth.js';
 import { realtime } from '../realtime.js';
@@ -504,6 +505,25 @@ adminRoutes.get('/users', requireAuth, requireRoles('ADMIN', 'SUPORTE'), (req: A
   return res.json(usersWithStats);
 });
 
+adminRoutes.put('/users/:id', requireAuth, requireRoles('ADMIN'), (req: AuthRequest, res: Response) => {
+  const { username, password } = req.body;
+  const db = getDb();
+  const user = db.users.find(u => u.id === req.params.id);
+  if (!user) return res.status(404).json({ error: 'Usuário não encontrado.' });
+
+  if (username) {
+      const usernameExists = db.users.find(u => u.username.toLowerCase() === username.toLowerCase() && u.id !== user.id);
+      if (usernameExists) return res.status(400).json({ error: 'Usuário já existe.' });
+      user.username = username;
+  }
+  if (password) {
+      const salt = bcrypt.genSaltSync(10);
+      db.user_passwords[user.id] = bcrypt.hashSync(password, salt);
+  }
+  saveDb();
+  return res.json({ success: true, user });
+});
+
 adminRoutes.put('/users/:id/role', requireAuth, requireRoles('ADMIN'), (req: AuthRequest, res: Response) => {
   const { role } = req.body;
   if (!['ADMIN', 'EDITOR', 'SUPORTE', 'USER'].includes(role)) {
@@ -588,4 +608,17 @@ adminRoutes.post('/backups/restore', requireAuth, requireRoles('ADMIN'), (req: A
 adminRoutes.get('/logs', requireAuth, requireRoles('ADMIN', 'SUPORTE'), (req: AuthRequest, res: Response) => {
   const db = getDb();
   return res.json(db.activity_logs);
+});
+
+// 10. Settings Management
+adminRoutes.get('/settings', requireAuth, requireRoles('ADMIN'), (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  return res.json(db.settings);
+});
+
+adminRoutes.put('/settings', requireAuth, requireRoles('ADMIN'), (req: AuthRequest, res: Response) => {
+  const db = getDb();
+  db.settings = { ...db.settings, ...req.body };
+  saveDb();
+  return res.json(db.settings);
 });

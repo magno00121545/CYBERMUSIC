@@ -31,12 +31,8 @@ export const PixCheckoutModal: React.FC<PixCheckoutModalProps> = ({
   const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
 
   const [order, setOrder] = useState<Order | null>(null);
-  const [payment, setPayment] = useState<Payment | null>(null);
   const [isCreatingOrder, setIsCreatingOrder] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
-  const [timeLeft, setTimeLeft] = useState<number>(30 * 60); // 30 mins
-  const [isSimulating, setIsSimulating] = useState(false);
-  const [isCheckingPayment, setIsCheckingPayment] = useState(false);
+  const [whatsappNumber, setWhatsappNumber] = useState('');
 
   // Quick guest credentials if not logged in
   const [guestName, setGuestName] = useState('');
@@ -45,38 +41,24 @@ export const PixCheckoutModal: React.FC<PixCheckoutModalProps> = ({
   const [isRegisteringGuest, setIsRegisteringGuest] = useState(false);
   const [guestError, setGuestError] = useState('');
 
-  // Countdown timer for PIX expiration
+  // Load settings
   useEffect(() => {
-    if (step !== 'pix') return;
-    const interval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(interval);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [step]);
+    const fetchSettings = async () => {
+      try {
+        const settings = await api.getAdminSettings();
+        setWhatsappNumber(settings.support_whatsapp || '(11) 99999-9999');
+      } catch (err) {
+        console.error('Erro ao carregar configurações:', err);
+      }
+    };
+    fetchSettings();
+  }, []);
 
   // Payment status polling
   useEffect(() => {
-    if (step !== 'pix' || !order) return;
-
-    const pollStatus = async () => {
-      try {
-        const res = await api.getPaymentStatus(order.id);
-        if (res.isPaid || res.status === 'PAID') {
-          setStep('success');
-        }
-      } catch {}
-    };
-
-    const interval = setInterval(pollStatus, 3000);
-    return () => clearInterval(interval);
+    // ...
   }, [step, order]);
-
+  
   if (!pkg) return null;
 
   const basePrice = pkg.discount_price !== null && pkg.discount_price !== undefined && pkg.discount_price < pkg.price
@@ -115,24 +97,29 @@ export const PixCheckoutModal: React.FC<PixCheckoutModalProps> = ({
   };
 
   // Handle Order Creation
-  const handleGeneratePix = async () => {
+  const handleGenerateWhatsappOrder = async () => {
     setIsCreatingOrder(true);
     try {
       // If user not logged in, auto-create a guest session
       if (!user) {
         const guestRandom = Math.floor(1000 + Math.random() * 9000);
         await authRegister({
-          name: `Cliente VIP #${guestRandom}`,
+          name: `Cliente #${guestRandom}`,
           email: `cliente${guestRandom}@cybermusic.com`,
           password: `pass_${guestRandom}_cyber`,
         });
       }
       const res = await api.createOrder(pkg.id, couponDiscount ? couponCode : undefined);
       setOrder(res.order);
-      setPayment(res.payment);
-      setStep('pix');
+      
+      // WhatsApp integration
+      const message = `Olá! Gostaria de finalizar meu pedido na Cyber Music.\n\nPedido: #${res.order.order_number}\nPacote: ${pkg.title}\nTotal: R$ ${res.order.total_amount.toFixed(2)}\n\nAguardo instruções para o pagamento via PIX.`;
+      const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+      
+      setStep('success');
     } catch (err: any) {
-      alert(`Erro ao gerar PIX: ${err.message}`);
+      alert(`Erro ao gerar pedido: ${err.message}`);
     } finally {
       setIsCreatingOrder(false);
     }
@@ -153,12 +140,15 @@ export const PixCheckoutModal: React.FC<PixCheckoutModalProps> = ({
         email: guestEmail,
         password: guestPassword,
       });
-      // Directly generate PIX order
+      // Directly generate WhatsApp order
       setIsCreatingOrder(true);
       const res = await api.createOrder(pkg.id, couponDiscount ? couponCode : undefined);
       setOrder(res.order);
-      setPayment(res.payment);
-      setStep('pix');
+      
+      const message = `Olá! Gostaria de finalizar meu pedido na Cyber Music.\n\nPedido: #${res.order.order_number}\nPacote: ${pkg.title}\nTotal: R$ ${res.order.total_amount.toFixed(2)}\n\nAguardo instruções para o pagamento.`;
+      const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+      setStep('success');
     } catch (err: any) {
       setGuestError(err.message || 'Erro ao criar conta');
     } finally {
@@ -167,44 +157,7 @@ export const PixCheckoutModal: React.FC<PixCheckoutModalProps> = ({
     }
   };
 
-  // Copy PIX Code
-  const handleCopyPix = () => {
-    if (payment?.pix_emv) {
-      navigator.clipboard.writeText(payment.pix_emv);
-      setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 3000);
-    }
-  };
 
-  // Simulate Payment Webhook (Development & Review environment)
-  const handleSimulatePayment = async () => {
-    if (!order) return;
-    setIsSimulating(true);
-    try {
-      await api.simulatePaymentWebhook(order.id);
-      setStep('success');
-    } catch (err: any) {
-      alert(err.message || 'Erro ao aprovar PIX');
-    } finally {
-      setIsSimulating(false);
-    }
-  };
-
-  // Download Package ZIP
-  const handleDirectDownload = async () => {
-    try {
-      const res = await api.generateDownloadToken(pkg.id);
-      window.open(res.downloadUrl, '_blank');
-    } catch (err: any) {
-      alert(err.message || 'Erro ao gerar download');
-    }
-  };
-
-  const formatTimer = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
 
   return (
     <AnimatePresence>
@@ -328,12 +281,12 @@ export const PixCheckoutModal: React.FC<PixCheckoutModalProps> = ({
                   <div className="space-y-3">
                     <button
                       type="button"
-                      onClick={handleGeneratePix}
+                      onClick={handleGenerateWhatsappOrder}
                       disabled={isCreatingOrder}
                       className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-400 hover:from-cyan-400 hover:to-emerald-300 disabled:opacity-50 text-black font-cyber font-black text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/30 transition-all active:scale-95 cursor-pointer"
                     >
                       <QrCode className="w-4 h-4" />
-                      <span>{isCreatingOrder ? 'GERANDO PIX...' : 'GERAR CÓDIGO PIX IMEDIATO'}</span>
+                      <span>{isCreatingOrder ? 'GERANDO PEDIDO...' : 'FINALIZAR VIA WHATSAPP'}</span>
                     </button>
 
                     <div className="relative flex items-center justify-center">
@@ -399,12 +352,12 @@ export const PixCheckoutModal: React.FC<PixCheckoutModalProps> = ({
                   </div>
                 ) : (
                   <button
-                    onClick={handleGeneratePix}
+                    onClick={handleGenerateWhatsappOrder}
                     disabled={isCreatingOrder}
                     className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-400 hover:from-cyan-400 hover:to-emerald-300 disabled:opacity-50 text-black font-cyber font-black text-sm tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/30 transition-all active:scale-95 cursor-pointer"
                   >
                     <QrCode className="w-4 h-4" />
-                    <span>{isCreatingOrder ? 'GERANDO PIX...' : 'GERAR CÓDIGO PIX AGORA'}</span>
+                    <span>{isCreatingOrder ? 'GERANDO PEDIDO...' : 'FINALIZAR VIA WHATSAPP'}</span>
                   </button>
                 )}
 

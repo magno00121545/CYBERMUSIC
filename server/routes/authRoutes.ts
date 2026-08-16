@@ -9,10 +9,10 @@ export const authRoutes = Router();
 // Register new user
 authRoutes.post('/register', async (req: Request, res: Response) => {
   try {
-    const { name, email, password, phone } = req.body;
+    const { name, username, password, phone } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ error: 'Nome, e-mail e senha são obrigatórios.' });
+    if (!name || !username || !password) {
+      return res.status(400).json({ error: 'Nome, usuário e senha são obrigatórios.' });
     }
 
     if (password.length < 6) {
@@ -20,11 +20,11 @@ authRoutes.post('/register', async (req: Request, res: Response) => {
     }
 
     const db = getDb();
-    const cleanEmail = email.toLowerCase().trim();
+    const cleanUsername = username.toLowerCase().trim();
 
-    const existingUser = db.users.find(u => u.email.toLowerCase() === cleanEmail);
+    const existingUser = db.users.find(u => u.username.toLowerCase() === cleanUsername);
     if (existingUser) {
-      return res.status(400).json({ error: 'Este e-mail já está cadastrado.' });
+      return res.status(400).json({ error: 'Este usuário já está cadastrado.' });
     }
 
     const userId = `usr_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
@@ -34,10 +34,10 @@ authRoutes.post('/register', async (req: Request, res: Response) => {
     const newUser: User = {
       id: userId,
       name: name.trim(),
-      email: cleanEmail,
+      username: cleanUsername,
       role: 'USER',
       phone: phone ? phone.trim() : undefined,
-      avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${cleanEmail}`,
+      avatar: `https://api.dicebear.com/7.x/bottts/svg?seed=${cleanUsername}`,
       created_at: new Date().toISOString(),
     };
 
@@ -45,7 +45,7 @@ authRoutes.post('/register', async (req: Request, res: Response) => {
     db.user_passwords[userId] = passwordHash;
     saveDb();
 
-    logActivity(userId, cleanEmail, 'USER_REGISTER', `Novo usuário registrado: ${name} (${cleanEmail})`);
+    logActivity(userId, cleanUsername, 'USER_REGISTER', `Novo usuário registrado: ${name} (${cleanUsername})`);
 
     const token = generateToken(newUser);
     return res.status(201).json({
@@ -62,27 +62,27 @@ authRoutes.post('/register', async (req: Request, res: Response) => {
 // Login
 authRoutes.post('/login', async (req: Request, res: Response) => {
   try {
-    const { email, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Informe seu e-mail e senha.' });
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Informe seu usuário e senha.' });
     }
 
     const db = getDb();
-    const cleanEmail = email.toLowerCase().trim();
-    const user = db.users.find(u => u.email.toLowerCase() === cleanEmail);
+    const cleanUsername = username.toLowerCase().trim();
+    const user = db.users.find(u => u.username.toLowerCase() === cleanUsername);
 
     if (!user) {
-      return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
+      return res.status(401).json({ error: 'Usuário ou senha incorretos.' });
     }
 
     const passwordHash = db.user_passwords[user.id];
     if (!passwordHash || !bcrypt.compareSync(password, passwordHash)) {
-      return res.status(401).json({ error: 'E-mail ou senha incorretos.' });
+      return res.status(401).json({ error: 'Usuário ou senha incorretos.' });
     }
 
     const token = generateToken(user);
-    logActivity(user.id, user.email, 'USER_LOGIN', `Login efetuado: ${user.name} [${user.role}]`);
+    logActivity(user.id, user.username, 'USER_LOGIN', `Login efetuado: ${user.name} [${user.role}]`);
 
     return res.json({
       user,
