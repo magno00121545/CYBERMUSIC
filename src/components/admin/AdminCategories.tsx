@@ -107,7 +107,7 @@ export const AdminCategories: React.FC = () => {
 
       {/* Categories Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {categories.map((cat) => (
+        {categories.map((cat) => cat && (
           <div
             key={cat.id}
             className="p-5 rounded-2xl bg-[#0c0c0e] border border-[#222226] hover:border-[#33333a] transition-all flex flex-col justify-between space-y-3"

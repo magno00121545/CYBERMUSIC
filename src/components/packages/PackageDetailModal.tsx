@@ -47,9 +47,9 @@ export const PackageDetailModal: React.FC<PackageDetailModalProps> = ({
   const formatSize = (bytes: number) => {
     if (!bytes) return '850 MB';
     if (bytes >= 1024 * 1024 * 1024) {
-      return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
+      return `${((bytes ?? 0) / (1024 * 1024 * 1024)).toFixed(1)} GB`;
     }
-    return `${Math.round(bytes / (1024 * 1024))} MB`;
+    return `${Math.round((bytes ?? 0) / (1024 * 1024))} MB`;
   };
 
   const formatDuration = (seconds?: number) => {
@@ -250,7 +250,7 @@ export const PackageDetailModal: React.FC<PackageDetailModalProps> = ({
               <div className="flex items-baseline gap-1.5">
                 {hasDiscount && (
                   <span className="text-xs text-[#888890] line-through">
-                    R$ {activePkg.price.toFixed(2)}
+                    R$ {(activePkg.price ?? 0).toFixed(2)}
                   </span>
                 )}
                 <span className="text-xl sm:text-2xl font-black font-cyber text-emerald-400">

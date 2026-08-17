@@ -113,7 +113,7 @@ export const PixCheckoutModal: React.FC<PixCheckoutModalProps> = ({
       setOrder(res.order);
       
       // WhatsApp integration
-      const message = `Olá! Gostaria de finalizar meu pedido na Cyber Music.\n\nPedido: #${res.order.order_number}\nPacote: ${pkg.title}\nTotal: R$ ${res.order.total_amount.toFixed(2)}\n\nAguardo instruções para o pagamento via PIX.`;
+      const message = `Olá! Gostaria de finalizar meu pedido na Cyber Music.\n\nPedido: #${res.order.order_number}\nPacote: ${pkg.title}\nTotal: R$ ${(res.order.total_amount ?? 0).toFixed(2)}\n\nAguardo instruções para o pagamento via PIX.`;
       const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
       
@@ -145,7 +145,7 @@ export const PixCheckoutModal: React.FC<PixCheckoutModalProps> = ({
       const res = await api.createOrder(pkg.id, couponDiscount ? couponCode : undefined);
       setOrder(res.order);
       
-      const message = `Olá! Gostaria de finalizar meu pedido na Cyber Music.\n\nPedido: #${res.order.order_number}\nPacote: ${pkg.title}\nTotal: R$ ${res.order.total_amount.toFixed(2)}\n\nAguardo instruções para o pagamento.`;
+      const message = `Olá! Gostaria de finalizar meu pedido na Cyber Music.\n\nPedido: #${res.order.order_number}\nPacote: ${pkg.title}\nTotal: R$ ${(res.order.total_amount ?? 0).toFixed(2)}\n\nAguardo instruções para o pagamento.`;
       const whatsappUrl = `https://wa.me/${whatsappNumber.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
       setStep('success');

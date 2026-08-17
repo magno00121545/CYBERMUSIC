@@ -133,7 +133,7 @@ export const AdminOrders: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1f1f24]">
-                {filtered.map((ord) => (
+                {filtered.map((ord) => ord && (
                   <tr key={ord.id} className="hover:bg-[#121215]">
                     <td className="py-3 px-3 font-mono font-bold text-[#c0c0c5]">#{ord.order_number}</td>
                     <td className="py-3 px-3">
@@ -145,7 +145,7 @@ export const AdminOrders: React.FC = () => {
                       {new Date(ord.created_at).toLocaleString('pt-BR')}
                     </td>
                     <td className="py-3 px-3 font-cyber text-emerald-400 font-bold">
-                      R$ {ord.final_amount.toFixed(2)}
+                      R$ {(ord.final_amount ?? 0).toFixed(2)}
                     </td>
                     <td className="py-3 px-3">
                       {ord.status === 'PAID' ? (

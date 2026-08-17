@@ -50,7 +50,7 @@ export const AdminLogs: React.FC = () => {
           <div className="p-8 text-center text-xs text-[#888890]">Nenhuma atividade registrada ainda.</div>
         ) : (
           <div className="space-y-2 max-h-[70vh] overflow-y-auto">
-            {logs.map((log) => (
+            {logs.map((log) => log && (
               <div
                 key={log.id}
                 className="p-3.5 rounded-xl bg-[#121215] border border-[#222226] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"

@@ -107,12 +107,12 @@ export const AdminCoupons: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1f1f24]">
-                {coupons.map((c) => (
+                {coupons.map((c) => c && (
                   <tr key={c.id} className="hover:bg-[#121215]">
                     <td className="py-3 px-3 font-cyber font-black text-cyan-300 text-sm">{c.code}</td>
                     <td className="py-3 px-3 font-mono text-slate-300">{c.discount_type === 'PERCENT' ? 'Porcentagem' : 'Valor Fixo'}</td>
                     <td className="py-3 px-3 font-cyber font-bold text-emerald-400">
-                      {c.discount_type === 'PERCENT' ? `${c.discount_value}% OFF` : `R$ ${c.discount_value.toFixed(2)}`}
+                      {c.discount_type === 'PERCENT' ? `${c.discount_value}% OFF` : `R$ ${(c.discount_value ?? 0).toFixed(2)}`}
                     </td>
                     <td className="py-3 px-3 font-mono text-[#888890]">
                       {c.used_count || 0} / {c.max_uses || '∞'}

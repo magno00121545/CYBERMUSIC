@@ -277,12 +277,12 @@ export const UserProfileView: React.FC<UserProfileViewProps> = ({
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1f1f24]">
-                {orders.map((ord) => (
+                {orders.map((ord) => ord && (
                   <tr key={ord.id} className="hover:bg-[#121215]">
                     <td className="py-3 px-3 font-mono font-bold text-[#c0c0c5]">#{ord.order_number}</td>
                     <td className="py-3 px-3 font-semibold text-white truncate max-w-[200px]">{ord.package_title}</td>
                     <td className="py-3 px-3 text-[#888890] font-mono">{new Date(ord.created_at).toLocaleDateString('pt-BR')}</td>
-                    <td className="py-3 px-3 font-cyber text-emerald-400 font-bold">R$ {ord.final_amount.toFixed(2)}</td>
+                    <td className="py-3 px-3 font-cyber text-emerald-400 font-bold">R$ {(ord.final_amount ?? 0).toFixed(2)}</td>
                     <td className="py-3 px-3">{getStatusBadge(ord.status)}</td>
                   </tr>
                 ))}

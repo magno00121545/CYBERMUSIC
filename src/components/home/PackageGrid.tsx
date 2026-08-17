@@ -161,7 +161,7 @@ export const PackageGrid: React.FC<PackageGridProps> = ({
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-          {filtered.map((pkg) => (
+          {filtered.map((pkg) => pkg && (
             <PackageCard
               key={pkg.id}
               pkg={pkg}

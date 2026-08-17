@@ -180,7 +180,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         Pacotes Encontrados ({searchResults.packages.length})
                       </div>
                       <div className="space-y-1">
-                        {searchResults.packages.map(pkg => (
+                        {searchResults.packages.map(pkg => pkg && (
                           <div
                             key={pkg.id}
                             onClick={() => {
@@ -209,7 +209,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         Músicas Individuais ({searchResults.songs.length})
                       </div>
                       <div className="space-y-1">
-                        {searchResults.songs.map(song => (
+                        {searchResults.songs.map(song => song && (
                           <div
                             key={song.id}
                             className="p-2 rounded-lg hover:bg-[#16161c] flex items-center justify-between text-xs"

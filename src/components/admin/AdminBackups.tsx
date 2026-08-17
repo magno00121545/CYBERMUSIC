@@ -54,8 +54,8 @@ export const AdminBackups: React.FC = () => {
   };
 
   const formatSize = (bytes: number) => {
-    if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
-    return `${(bytes / 1024).toFixed(1)} KB`;
+    if (bytes >= 1024 * 1024) return `${((bytes ?? 0) / (1024 * 1024)).toFixed(2)} MB`;
+    return `${((bytes ?? 0) / 1024).toFixed(1)} KB`;
   };
 
   return (
@@ -87,7 +87,7 @@ export const AdminBackups: React.FC = () => {
           <div className="p-8 text-center text-xs text-[#888890]">Nenhum backup criado ainda. Clique acima para gerar o primeiro.</div>
         ) : (
           <div className="space-y-2">
-            {backups.map((b) => (
+            {backups.map((b) => b && (
               <div
                 key={b.filename}
                 className="p-4 rounded-2xl bg-[#121215] border border-[#222226] flex items-center justify-between gap-3 text-xs"

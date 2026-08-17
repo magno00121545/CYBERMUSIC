@@ -64,9 +64,9 @@ export const MyPurchasesView: React.FC<MyPurchasesViewProps> = ({ onBackToCatalo
   const formatSize = (bytes: number) => {
     if (!bytes) return '850 MB';
     if (bytes >= 1024 * 1024 * 1024) {
-      return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
+      return `${((bytes ?? 0) / (1024 * 1024 * 1024)).toFixed(1)} GB`;
     }
-    return `${Math.round(bytes / (1024 * 1024))} MB`;
+    return `${Math.round((bytes ?? 0) / (1024 * 1024))} MB`;
   };
 
   return (
@@ -130,9 +130,10 @@ export const MyPurchasesView: React.FC<MyPurchasesViewProps> = ({ onBackToCatalo
       ) : (
         <div className="space-y-4">
           {purchases.map((purchase) => {
+            if (!purchase || !purchase.package) return null;
             const pkg: Package = purchase.package;
             const songs: Song[] = pkg?.songs || [];
-            const isExpanded = expandedPackageId === pkg.id;
+            const isExpanded = pkg && expandedPackageId === pkg.id;
 
             return (
               <div

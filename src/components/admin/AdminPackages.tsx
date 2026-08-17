@@ -151,7 +151,7 @@ export const AdminPackages: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#1f1f24]">
-                {filtered.map((pkg) => (
+                {filtered.map((pkg) => pkg && (
                   <tr key={pkg.id} className="hover:bg-[#121215]">
                     <td className="py-3 px-3">
                       <div className="flex items-center gap-3">
@@ -174,7 +174,7 @@ export const AdminPackages: React.FC = () => {
                         {pkg.total_tracks} faixas
                       </span>
                     </td>
-                    <td className="py-3 px-3 font-cyber text-slate-300">R$ {pkg.price.toFixed(2)}</td>
+                    <td className="py-3 px-3 font-cyber text-slate-300">R$ {(pkg.price ?? 0).toFixed(2)}</td>
                     <td className="py-3 px-3 font-cyber text-emerald-400 font-bold">
                       {pkg.discount_price ? `R$ ${pkg.discount_price.toFixed(2)}` : '-'}
                     </td>

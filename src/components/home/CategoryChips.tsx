@@ -60,6 +60,7 @@ export const CategoryChips: React.FC<CategoryChipsProps> = ({
 
         {/* Dynamic Category Chips */}
         {categories.map((cat) => {
+          if (!cat) return null;
           const Icon = getCategoryIcon(cat.slug || cat.icon);
           const isSelected = selectedCategory === cat.id || selectedCategory === cat.slug;
 

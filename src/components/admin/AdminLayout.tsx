@@ -10,9 +10,9 @@ import { AdminCategories } from './AdminCategories.js';
 import { AdminOrders } from './AdminOrders.js';
 import { AdminCoupons } from './AdminCoupons.js';
 import { AdminUsers } from './AdminUsers.js';
+import { AdminLogs } from './AdminLogs.js';
 import { AdminNotifications } from './AdminNotifications.js';
 import { AdminBackups } from './AdminBackups.js';
-import { AdminLogs } from './AdminLogs.js';
 import { AdminSettings } from './AdminSettings.js';
 
 interface AdminLayoutProps {
@@ -145,6 +145,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ onBackToApp }) => {
           {activeTab === 'notifications' && <AdminNotifications />}
           {activeTab === 'backups' && <AdminBackups />}
           {activeTab === 'logs' && <AdminLogs />}
+          {activeTab === 'settings' && <AdminSettings />}
         </main>
 
       </div>
